@@ -1,0 +1,21 @@
+
+# Editor specific settings
+.vim/
+.vscode/
+.vs/
+
+# Temporary files
+.*
+!.gitignore
+
+# Cargo specific files
+Cargo.*
+
+# Input files
+input*.txt
+
+# Build results
+/target
+part1
+part2
+
