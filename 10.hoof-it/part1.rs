@@ -1,13 +1,7 @@
+mod common;
+
 fn main() {
-    let map: Vec<Vec<_>> = std::io::stdin()
-        .lines()
-        .map(|line| {
-            line.unwrap()
-                .chars()
-                .map(|c| c.to_digit(10).unwrap())
-                .collect()
-        })
-        .collect();
+    let map: Vec<Vec<_>> = common::parse_input();
     let mut result = 0;
     for i in 0..map.len() {
         for j in 0..map[i].len() {
