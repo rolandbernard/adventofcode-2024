@@ -18,4 +18,6 @@ input*.txt
 /target
 part1
 part2
+part1-force
+part2-force
 
