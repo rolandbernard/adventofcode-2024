@@ -1,4 +1,3 @@
-
 import sys
 import z3
 
@@ -51,8 +50,8 @@ while True:
             b = a >> combo
         case 7:
             c = a >> combo
+
 solver.minimize(a_var)
 assert solver.check() == z3.sat
 
 print('Result:', solver.model()[a_var])
-
