@@ -1,4 +1,3 @@
-import random
 import sys
 import z3
 
@@ -8,8 +7,9 @@ gates = [
     list(gate.split()) + [out] for gate, out in
     (list(l.split(' -> ')) for l in gates.strip().split('\n'))
 ]
-zbits = 1 + max(int(g[3][1:]) for g in gates if g[3].startswith('z'))
-xbits = ybits = zbits - 1
+xbits = 1 + max(int(i[1:]) for g in gates for i in g if i.startswith('x'))
+ybits = 1 + max(int(i[1:]) for g in gates for i in g if i.startswith('y'))
+zbits = 1 + max(int(i[1:]) for g in gates for i in g if i.startswith('z'))
 gate_iter = 0
 
 
@@ -81,15 +81,7 @@ for i in range(len(gates)):
     solver.add(z3.AtMost(*swaps[i], 1))
     solver.add(z3.AtLeast(*swaps[i], 1))
 
-for _ in range(16):
-    print('build random example')
-    x = random.randint(0, 2**xbits - 1)
-    y = random.randint(0, 2**ybits - 1)
-    print(f"{x} + {y} = {x + y}")
-    build_gates(solver, x, y, x + y)
-
 while True:
-    print('searching for pairs')
     assert solver.check() == z3.sat
     model = solver.model()
     needed_swaps = {}
@@ -97,12 +89,9 @@ while True:
         for j, b in enumerate(gates):
             if i != j and bool(model[swaps[i][j]]):
                 needed_swaps[a[3]] = b[3]
-    print(needed_swaps)
-    print('searching for counter examples')
     x, y = find_counter(needed_swaps)
     if x is None:
         break
-    print(f"{x} + {y} = {x + y}")
     build_gates(solver, x, y, x + y)
 
 print('Result:', ','.join(sorted(needed_swaps.keys())))
