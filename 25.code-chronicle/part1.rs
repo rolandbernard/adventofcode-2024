@@ -6,33 +6,22 @@ fn main() {
     let mut locks = Vec::new();
     let mut keys = Vec::new();
     for schematic in input.split("\n\n") {
-        let schematic = schematic
-            .trim()
-            .lines()
-            .map(|e| e.chars().collect())
-            .collect::<Vec<Vec<_>>>();
-        let numbers = (0..schematic[0].len())
-            .map(|i| {
-                (0..schematic.len())
-                    .filter(|&j| schematic[j][i] == '#')
-                    .count()
-            })
-            .collect::<Vec<_>>();
-        if schematic[0].iter().all(|&c| c == '#') {
+        let mut numbers = [0; 5];
+        for line in schematic.lines() {
+            for (i, _) in line.chars().enumerate().filter(|&(_, c)| c == '#') {
+                numbers[i] += 1;
+            }
+        }
+        if schematic.lines().next().unwrap().chars().all(|c| c == '#') {
             locks.push(numbers);
         } else {
-            keys.push(
-                numbers
-                    .into_iter()
-                    .map(|e| schematic.len() - e)
-                    .collect::<Vec<_>>(),
-            );
+            keys.push(numbers);
         }
     }
     let mut result = 0;
     for key in &keys {
         for lock in &locks {
-            if key.iter().zip(lock.iter()).all(|(k, l)| k >= l) {
+            if key.iter().zip(lock.iter()).all(|(k, l)| k + l <= 7) {
                 result += 1;
             }
         }
